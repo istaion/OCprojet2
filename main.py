@@ -18,15 +18,15 @@ if reponse.ok :
     categ=menuSoup.findAll('a')[-1].text
     titre=menuSoup.find('li', {"class": "active"}).text
 
-    Description=soup.findAll('p')[3].text #Ici la description ne se trouve dans aucune division interessante, pas encore trouvé de meilleurs moyen que de récuperer tous les paragraphes...
+    Description=soup.findAll('p')[3].text.replace(';',',') #Ici la description ne se trouve dans aucune division interessante, pas encore trouvé de meilleurs moyen que de récuperer tous les paragraphes...
 
     image=soup.find('div', {'class':'item active'}).find('img')['src']#Je récupère l'url de l'image (incomplet)
     image=image.replace('../..', 'http://books.toscrape.com')# Et je le complète
 
 
     with open('fichier.csv','w') as file :
-        file.write('title, product_page_url, universal_ product_code (upc),price_including_tax,price_excluding_tax,number_available,product_description,category,review_rating,image_url\n')
-        file.write(titre + ',' + url + ',' + UPC + ',' + price_inc + ',' + price_exc + ',' + dispo + ',' + Description + ',' + categ + ',' + reviews + ',' + image)
+        file.write('title; product_page_url; universal_ product_code (upc);price_including_tax,price_excluding_tax;number_available;product_description;category;review_rating;image_url\n')
+        file.write(titre + ';' + url + ';' + UPC + ';' + price_inc + ';' + price_exc + ';' + dispo + ';' + Description + ';' + categ + ';' + reviews + ';' + image)
 
 else:
     print(reponse)

@@ -3,6 +3,19 @@ from bs4 import BeautifulSoup
 
 
 
+def dico_url_cat(): #Fonction récuperant les liens (en valeur) et le nom des catégories (en clés) dans un dictionnaire
+    dico_cat={}
+    reponse=requests.get("https://books.toscrape.com/")
+    soup=BeautifulSoup(reponse.text, 'html.parser')
+    soup_col=soup.find('ul',{'class':'nav nav-list'}).find('ul').findAll('a')
+
+
+    for cat in range(len(soup_col)) :
+        dico_cat[soup_col[cat].text.strip()]='https://books.toscrape.com/'+soup_col[cat]['href']
+
+    return dico_cat
+
+
 def liste_url_livre(url) :
     liste_url=[]
     reponse=requests.get(url)

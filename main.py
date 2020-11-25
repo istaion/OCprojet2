@@ -3,6 +3,7 @@ from fonctions import *
 import requests
 import shutil
 import time
+import csv
 
 t=time.time()
 dictionnaire_cat=dico_url_cat()
@@ -10,7 +11,12 @@ dictionnaire_cat=dico_url_cat()
 for categ, valeur in dictionnaire_cat.items():
     dico_lien_livre=dico_url_livre(valeur)
     with open(categ+'.csv', 'w') as file:
-        file.write( 'title; product_page_url; universal_ product_code (upc); price_including_tax; price_excluding_tax; number_available; product_description; category; review_rating;image_url\n')
+        writer = csv.writer(file)
+        writer.writerow(
+            ['title'] + ['product_page_url'] + ['universal_ product_code (upc)'] + ['price_including_tax'] +
+            ['price_excluding_tax'] + ['number_available'] + ['product_description'] + ['category'] +
+            ['review_rating'] + ['image_url']
+        )
         for lien, valeurs in dico_lien_livre.items() :
             reponse=requests.get(lien)
             if reponse.ok :
@@ -25,10 +31,12 @@ for categ, valeur in dictionnaire_cat.items():
 
                 titre=valeurs[0]
 
-                Description = soup.find('meta', {'name':'description'})['content'].replace(';',',').strip() #On récupère la description sans les points virgules et les saut de ligne pour le csv
+                Description = soup.find('meta', {'name':'description'})['content'].strip() #On récupère la description sans les saut de ligne
 
                 image=valeurs[1]
-                file.write(titre + ' ; ' + lien + ' ; ' + UPC + ' ; ' + price_inc + ' ; ' + price_exc + ' ; ' + dispo + ' ; ' + Description + ' ; ' + categ + ' ; ' + reviews + ' ; ' + image + '\n')
+                writer.writerow(
+                    [titre] + [lien] + [UPC] + [price_inc] + [price_exc] + [dispo] + [Description] + [categ] +
+                    [reviews] + [image])
 
                 r = requests.get(image, stream=True)
                 if r.ok :

@@ -4,13 +4,16 @@ import requests
 import shutil
 import time
 import csv
+import os
 
 t=time.time()
 dictionnaire_cat=dico_url_cat()
-
+os.makedirs('fichierCsv',exist_ok=True)
+os.makedirs('images',exist_ok=True)
 for categ, valeur in dictionnaire_cat.items():
+    os.makedirs('images/'+categ, exist_ok=True)
     dico_lien_livre=dico_url_livre(valeur)
-    with open(categ+'.csv', 'w') as file:
+    with open('fichierCsv/'+categ+'.csv', 'w') as file:
         writer = csv.writer(file)
         writer.writerow(
             ['title'] + ['product_page_url'] + ['universal_ product_code (upc)'] + ['price_including_tax'] +
@@ -41,7 +44,7 @@ for categ, valeur in dictionnaire_cat.items():
                 r = requests.get(image, stream=True)
                 if r.ok :
                     titre=titre.replace('/','')
-                    with open(titre+'.jpeg', 'wb') as f:
+                    with open('images/'+categ+'/'+titre+'.jpeg', 'wb') as f:
                         shutil.copyfileobj(r.raw, f)
                 else :
                     print(r)

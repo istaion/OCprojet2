@@ -13,7 +13,7 @@ os.makedirs('images', exist_ok=True)
 for categ, valeur in dictionnaire_cat.items():
     os.makedirs('images/'+categ, exist_ok=True)  # Création d'un dossier par catégorie pour les images
     dico_lien_livre = dico_url_livre(valeur)    # Dictionnaire avec en clés les liens vers les pages des livres et en valeurs le titre et l'url de l'image
-    with open('fichierCsv/'+categ+'.csv', 'w') as file:
+    with open('fichierCsv/'+categ+'.csv', 'w', encoding="utf-8") as file:
         writer = csv.writer(file)  # Initialisation de notre fichier csv
         writer.writerow(
             ['title'] + ['product_page_url'] + ['universal_ product_code (upc)'] + ['price_including_tax'] +

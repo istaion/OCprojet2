@@ -3,14 +3,14 @@ Le programme recupère les informations sur les livres de booktoscrap.com et les
 
 ## utilisation
 
-###Créer votre environnement virtuel :
+### Créer votre environnement virtuel :
 
 
 ```bash
 python3 -m venv env
 ```
 
-###Activer votre environnement :
+### Activer votre environnement :
 
 linux ou mac :
 ```bash
@@ -23,19 +23,19 @@ windows :
 env/Scripts/activate.bat
 ```
 
-###Installer les packages :
+### Installer les packages :
 
 ```bash
 pip install -r requierements.txt
 ```
 
-###Executer le programme :
+### Executer le programme :
 
 ```bash
 python3 main.py
 ```
 
-##Fonctionnement
+## Fonctionnement
 
 Les csv contenant les informations des livres d'une catégorie sont enregistrés dans un dossier fichierCsv. 
 

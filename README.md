@@ -3,6 +3,8 @@ Le programme recupère les informations sur les livres de booktoscrap.com et les
 
 ## utilisation
 
+Dans votre terminal placez vous à la racine du projet puis :
+
 ### Créer votre environnement virtuel :
 
 
@@ -39,7 +41,7 @@ python3 main.py
 
 Les csv contenant les informations des livres d'une catégorie sont enregistrés dans un dossier fichierCsv. 
 
-Les images sont enregistrés dans des dossiers correspondants aux catégories des livres à l'interieur d'un dossier images. 
+Les images sont enregistrées dans des dossiers correspondants aux catégories des livres à l'interieur d'un dossier images. 
 
 Pour ouvrir les csv utiliser la virgule (,) comme séparateur et le double guillemet (") comme séparateur de chaine de caractère.
 

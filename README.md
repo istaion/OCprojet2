@@ -22,7 +22,7 @@ source env/bin/activate
 windows :
 
 ```bash
-env/Scripts/activate.bat
+env\\Scripts\\activate.bat
 ```
 
 ### Installer les packages :

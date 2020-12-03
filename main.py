@@ -1,10 +1,10 @@
-from bs4 import BeautifulSoup
-from fonctions import *
-import requests
-import shutil
-from slugify import slugify
 import csv
 import os
+import shutil
+
+from slugify import slugify
+
+from fonctions import *
 
 dictionnaire_cat = dico_url_cat()  # Dictionnaire avec en clés le nom des catégories et les liens en valeurs
 
@@ -44,7 +44,7 @@ for categ, valeur in dictionnaire_cat.items():
 
                 r = requests.get(image, stream=True)  # On télecharge les images
                 if r.ok:
-                    titre = slugify(titre)
+                    titre = slugify(titre, max_length=50)
                     with open('images/'+categ+'/'+titre+'.jpeg', 'wb') as f:
                         shutil.copyfileobj(r.raw, f)
                 else:

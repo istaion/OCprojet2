@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from fonctions import *
 import requests
 import shutil
+from slugify import slugify
 import csv
 import os
 
@@ -43,7 +44,7 @@ for categ, valeur in dictionnaire_cat.items():
 
                 r = requests.get(image, stream=True)  # On télecharge les images
                 if r.ok:
-                    titre = titre.replace('/', '')
+                    titre = slugify(titre)
                     with open('images/'+categ+'/'+titre+'.jpeg', 'wb') as f:
                         shutil.copyfileobj(r.raw, f)
                 else:

@@ -1,54 +1,53 @@
 import csv
 import os
 import shutil
-
 from slugify import slugify
-
 from fonctions import *
 
-dictionnaire_cat = dico_url_cat()  # Dictionnaire avec en clés le nom des catégories et les liens en valeurs
-
-os.makedirs('fichierCsv', exist_ok=True)  # Création des dossiers qui vont contenir nos informations
+category_dictionary = category_url_dictionary()  # Dictionary with category name (keys) and link (value)
+# Creation of folders to tidy up the data
+os.makedirs('csv_files', exist_ok=True)
 os.makedirs('images', exist_ok=True)
 
-for categ, valeur in dictionnaire_cat.items():
-    os.makedirs('images/'+categ, exist_ok=True)  # Création d'un dossier par catégorie pour les images
-    dico_lien_livre = dico_url_livre(valeur)    # Dictionnaire avec en clés les liens vers les pages des livres et en valeurs le titre et l'url de l'image
-    with open('fichierCsv/'+categ+'.csv', 'w', encoding="utf-8") as file:
-        writer = csv.writer(file)  # Initialisation de notre fichier csv
+for category, category_url in category_dictionary.items():
+    print('Les données de la catégorie ' + category + ' sont en cours de récupération')
+    os.makedirs('images/'+category, exist_ok=True)  # Creation of image folder for each category
+    # Dictionary with book url (keys) title and picture link (value)
+    book_dictionary = book_url_dictionary(category_url)
+    with open('csv_files/'+category+'.csv', 'w', encoding='utf-8') as file:
+        writer = csv.writer(file)  # initialization of the csv file
         writer.writerow(
             ['title'] + ['product_page_url'] + ['universal_ product_code (upc)'] + ['price_including_tax'] +
             ['price_excluding_tax'] + ['number_available'] + ['product_description'] + ['category'] +
             ['review_rating'] + ['image_url']
         )
-        for lien, valeurs in dico_lien_livre.items():
-            reponse = requests.get(lien)
-            if reponse.ok:
-                soup = BeautifulSoup(reponse.text, 'html.parser')
-                tabSoup = soup.find("table", {"class": "table table-striped"})  # on récupère le tableau d'information du produit
-                liste_tab = tabSoup.findAll('td')  # liste contenant les cellules du tableau
-                UPC = liste_tab[0].text  # numéro UPC
-                price_exc = liste_tab[2].text.replace('Â', '')  # prix hors taxe
-                price_inc = liste_tab[3].text.replace('Â', '')  # prix avec taxe
-                dispo = liste_tab[5].text  # nombre de livres disponibles
-                reviews = liste_tab[6].text  # nombre de reviews
-
-                titre = valeurs[0]  # titre du livre
-                image = valeurs[1]  # url de l'image de couverture
-
-                Description = soup.find('meta', {'name': 'description'})['content'].strip()  # On récupère la description sans les sauts de ligne
-
+        for link, values in book_dictionary.items():
+            response = requests.get(link)
+            if response.ok:
+                soup = BeautifulSoup(response.text, 'html.parser')
+                # get the product information table
+                information_table = soup.find('table', {'class': 'table table-striped'})
+                cell_list = information_table.findAll('td')  # list containing table cells
+                upc = cell_list[0].text  # UPC number
+                price_excluding_tax = cell_list[2].text.replace('Â', '')
+                price_including_tax = cell_list[3].text.replace('Â', '')
+                number_available = cell_list[5].text
+                reviews = cell_list[6].text  # reviews number
+                title = values[0]  # Title of the book
+                image = values[1]  # picture link
+                # get the description without the line breaks
+                description = soup.find('meta', {'name': 'description'})['content'].strip()
                 writer.writerow(
-                    [titre] + [lien] + [UPC] + [price_inc] + [price_exc] + [dispo] + [Description] + [categ] +
-                    [reviews] + [image])  # On comlète le csv
-
-                r = requests.get(image, stream=True)  # On télecharge les images
+                    [title] + [link] + [upc] + [price_including_tax] + [price_excluding_tax] + [number_available] +
+                    [description] + [category] + [reviews] + [image]
+                )  # Addition of information in the csv
+                r = requests.get(image, stream=True)  # download images
                 if r.ok:
-                    titre = slugify(titre, max_length=50)
-                    with open('images/'+categ+'/'+titre+'.jpeg', 'wb') as f:
+                    title = slugify(title, max_length=50)
+                    with open('images/'+category+'/'+title+'.jpeg', 'wb') as f:
                         shutil.copyfileobj(r.raw, f)
                 else:
                     print(r)
             else:
-                print(reponse)
-        print('Les données de la catégorie ' + categ + ' ont été récupérées')
+                print(response)
+        print('Les données de la catégorie ' + category + ' ont été récupérées')
